@@ -13,12 +13,13 @@ public class RFIBManager : MonoBehaviour
     public GameParameter gameParameter;
 
     public Dictionary<string, bool> tagSensing;
+    public Dictionary<string, int> tagMissTime;
 
     #region RFIB parameter
-    readonly short[] EnableAntenna = {1, 2, 3, 4};       // reader port
-    readonly string ReaderIP = "192.168.1.96";           // 到時再說
-    readonly double ReaderPower = 32, Sensitive = -70;   // 功率, 敏感度
-    readonly bool Flag_ToConnectTheReade = false;        // false就不會連reader
+    readonly short[] EnableAntenna = { 1 };       // reader port
+    readonly string ReaderIP = "192.168.1.94";           // 到時再說
+    readonly double ReaderPower = 30, Sensitive = -70;   // 功率, 敏感度
+    readonly bool Flag_ToConnectTheReade = true;        // false就不會連reader
 
     readonly bool showSysMesg = true;
     readonly bool showReceiveTag = true;
@@ -57,10 +58,17 @@ public class RFIBManager : MonoBehaviour
         #endregion
 
         tagSensing = new Dictionary<string, bool>();
+        tagMissTime = new Dictionary<string, int>();
 
         foreach (var dic in gameParameter.unitDic)
         {
             tagSensing.Add(dic.Key, false);
+            tagMissTime.Add(dic.Key, 0);
+        }
+        foreach (var dic in gameParameter.modeDic)
+        {
+            tagSensing.Add(dic.Key, false);
+            tagMissTime.Add(dic.Key, 0);
         }
     }
 
@@ -68,6 +76,7 @@ public class RFIBManager : MonoBehaviour
     void Update()
     {
         RFIB.statesUpdate();
+        CountTagTime();
         SenseID();
         KeyPressed();
     }
@@ -90,15 +99,46 @@ public class RFIBManager : MonoBehaviour
         }
     }
 
-    public void SenseID()
+    public void CountTagTime()
     {
         foreach (var dic in gameParameter.unitDic)
         {
             if (RFIB.IfContainTag(dic.Key))
             {
                 tagSensing[dic.Key] = true;
+                tagMissTime[dic.Key] = 0;
             }
             else
+            {
+                tagMissTime[dic.Key] += 1;
+            }
+        }
+        foreach (var dic in gameParameter.modeDic)
+        {
+            if (RFIB.IfContainTag(dic.Key))
+            {
+                tagSensing[dic.Key] = true;
+                tagMissTime[dic.Key] = 0;
+            }
+            else
+            {
+                tagMissTime[dic.Key] += 1;
+            }
+        }
+    }
+
+    public void SenseID()
+    {
+        foreach (var dic in gameParameter.unitDic)
+        {
+            if (tagMissTime[dic.Key] > 10)
+            {
+                tagSensing[dic.Key] = false;
+            }
+        }
+        foreach (var dic in gameParameter.modeDic)
+        {
+            if (tagMissTime[dic.Key] > 10)
             {
                 tagSensing[dic.Key] = false;
             }
@@ -144,6 +184,20 @@ public class RFIBManager : MonoBehaviour
             ChangeTestTag("8940 0000 3333 0007 0001", true);
         if (Input.GetKeyDown("8"))
             ChangeTestTag("8940 0000 3333 0008 0001", true);
+
+        if (Input.GetKeyUp("q"))
+            ChangeTestTag("8940 0000 3333 0011 0001", false);
+        if (Input.GetKeyUp("w"))
+            ChangeTestTag("8940 0000 3333 0012 0001", false);
+        if (Input.GetKeyUp("e"))
+            ChangeTestTag("8940 0000 3333 0013 0001", false);
+
+        if (Input.GetKeyDown("q"))
+            ChangeTestTag("8940 0000 3333 0011 0001", true);
+        if (Input.GetKeyDown("w"))
+            ChangeTestTag("8940 0000 3333 0012 0001", true);
+        if (Input.GetKeyDown("e"))
+            ChangeTestTag("8940 0000 3333 0013 0001", true);
 
         #region Information
         if (Input.GetKeyUp(";"))
