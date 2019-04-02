@@ -147,57 +147,19 @@ public class RFIBManager : MonoBehaviour
 
     public void KeyPressed()
     {
-        if (Input.GetKeyUp("`"))
-            ChangeTestTag("8940 0000 3333 0000 0001", false);
-        if (Input.GetKeyUp("1"))
-            ChangeTestTag("8940 0000 3333 0001 0001", false);
-        if (Input.GetKeyUp("2"))
-            ChangeTestTag("8940 0000 3333 0002 0001", false);
-        if (Input.GetKeyUp("3"))
-            ChangeTestTag("8940 0000 3333 0003 0001", false);
-        if (Input.GetKeyUp("4"))
-            ChangeTestTag("8940 0000 3333 0004 0001", false);
-        if (Input.GetKeyUp("5"))
-            ChangeTestTag("8940 0000 3333 0005 0001", false);
-        if (Input.GetKeyUp("6"))
-            ChangeTestTag("8940 0000 3333 0006 0001", false);
-        if (Input.GetKeyUp("7"))
-            ChangeTestTag("8940 0000 3333 0007 0001", false);
-        if (Input.GetKeyUp("8"))
-            ChangeTestTag("8940 0000 3333 0008 0001", false);
+        GetKey("1", "8940 0000 3333 0000 0001");
+        GetKey("2", "8940 0000 3333 0001 0001");
+        GetKey("3", "8940 0000 3333 0002 0001");
+        GetKey("4", "8940 0000 3333 0003 0001");
+        GetKey("5", "8940 0000 3333 0004 0001");
+        GetKey("6", "8940 0000 3333 0005 0001");
+        GetKey("7", "8940 0000 3333 0006 0001");
+        GetKey("8", "8940 0000 3333 0007 0001");
+        GetKey("9", "8940 0000 3333 0008 0001");
 
-        if (Input.GetKeyDown("`"))
-            ChangeTestTag("8940 0000 3333 0000 0001", true);
-        if (Input.GetKeyDown("1"))
-            ChangeTestTag("8940 0000 3333 0001 0001", true);
-        if (Input.GetKeyDown("2"))
-            ChangeTestTag("8940 0000 3333 0002 0001", true);
-        if (Input.GetKeyDown("3"))
-            ChangeTestTag("8940 0000 3333 0003 0001", true);
-        if (Input.GetKeyDown("4"))
-            ChangeTestTag("8940 0000 3333 0004 0001", true);
-        if (Input.GetKeyDown("5"))
-            ChangeTestTag("8940 0000 3333 0005 0001", true);
-        if (Input.GetKeyDown("6"))
-            ChangeTestTag("8940 0000 3333 0006 0001", true);
-        if (Input.GetKeyDown("7"))
-            ChangeTestTag("8940 0000 3333 0007 0001", true);
-        if (Input.GetKeyDown("8"))
-            ChangeTestTag("8940 0000 3333 0008 0001", true);
-
-        if (Input.GetKeyUp("q"))
-            ChangeTestTag("8940 0000 3333 0011 0001", false);
-        if (Input.GetKeyUp("w"))
-            ChangeTestTag("8940 0000 3333 0012 0001", false);
-        if (Input.GetKeyUp("e"))
-            ChangeTestTag("8940 0000 3333 0013 0001", false);
-
-        if (Input.GetKeyDown("q"))
-            ChangeTestTag("8940 0000 3333 0011 0001", true);
-        if (Input.GetKeyDown("w"))
-            ChangeTestTag("8940 0000 3333 0012 0001", true);
-        if (Input.GetKeyDown("e"))
-            ChangeTestTag("8940 0000 3333 0013 0001", true);
+        GetKey("q", "8940 0000 3333 0011 0001");
+        GetKey("w", "8940 0000 3333 0012 0001");
+        GetKey("e", "8940 0000 3333 0013 0001");
 
         #region Information
         if (Input.GetKeyUp(";"))
@@ -221,5 +183,13 @@ public class RFIBManager : MonoBehaviour
             RFIB._Testing_AddHoldingTag(tag);
         else
             RFIB._Testing_RemoveHoldingTag(tag);
+    }
+
+    public void GetKey(string key, string tag)
+    {
+        if (Input.GetKeyDown(key))
+            ChangeTestTag(tag, true);
+        if (Input.GetKeyUp(key))
+            ChangeTestTag(tag, false);
     }
 }
